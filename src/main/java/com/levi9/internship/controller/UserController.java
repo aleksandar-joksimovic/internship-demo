@@ -6,7 +6,7 @@ import com.levi9.internship.model.OrderDTO;
 import com.levi9.internship.model.UserDTO;
 import com.levi9.internship.service.OrderService;
 import com.levi9.internship.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @CrossOrigin("*/*")
 @RequestMapping("/api/v1")
 public class UserController implements UsersApi {
