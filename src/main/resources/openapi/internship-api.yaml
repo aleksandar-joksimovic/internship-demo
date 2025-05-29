@@ -1,0 +1,284 @@
+openapi: 3.0.0
+info:
+  title: Internship API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: users
+  - name: items
+  - name: orders
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Get All Users
+      description: Get all users that are available in the system
+      operationId: getUsers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDTO'
+    post:
+      tags:
+        - users
+      summary: Create User
+      description: Create User and save it into the DB
+      operationId: createUser
+      requestBody:
+        description: User data
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+  /users/id/{userId}:
+    get:
+      tags:
+        - users
+      summary: Get user by userId
+      description: Get user by provided userId from DB
+      operationId: getUserById
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/username/{username}:
+    get:
+      tags:
+        - users
+      summary: Get user by Username
+      description: Get user by provided username from DB
+      operationId: getUserByUsername
+      parameters:
+        - $ref: "#/components/parameters/username"
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/UserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/delete/{username}:
+    delete:
+      tags:
+        - users
+      summary: Delete User
+      description: Delete user from DB
+      operationId: deleteUserByUsername
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /items:
+    get:
+      tags:
+        - items
+      summary: Get All Items
+      description: Get all items that are available in the system
+      operationId: getItems
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemDTO'
+    post:
+      tags:
+        - items
+      summary: Create Item
+      description: Create Item and save it into the DB
+      operationId: createItem
+      requestBody:
+        description: Item data
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/ItemDTO'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/ItemDTO'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+  /users/{userId}/orders:
+    get:
+      tags:
+        - users
+      summary: Get All Orders by provided UserId
+      description: Get all Orders that are available in the system
+      operationId: getOrdersByUserId
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDTO'
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: Create Order
+      description: Create Order and save it into the DB
+      operationId: createOrder
+      requestBody:
+        description: Order data
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/OrderDTO'
+      responses:
+        '201':
+          description: Successful operation
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/OrderDTO'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+components:
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: UserId of an entity
+      required: true
+      schema:
+        type: string
+    username:
+      name: username
+      in: path
+      description: Username of an entity
+      required: true
+      schema:
+        type: string
+  responses:
+    BadRequestError:
+      description: Provided data is not acceptable!
+    NotFoundError:
+      description: Requested document is not found!
+    InternalServerError:
+      description: Internal server error!
+    ConflictError:
+      description: Conflict error - duplicate unique value!
+  schemas:
+    UserDTO:
+      type: object
+      required:
+        - username
+        - email
+      properties:
+        username:
+          type: string
+          description: Unique username value for each User
+          example: "Student"
+        firstName:
+          type: string
+          description: Firstname of the user
+          example: "Petar"
+        lastName:
+          type: string
+          description: Lastname of the user
+          example: "Petrovic"
+        email:
+          type: string
+          description: Unique email value for each User
+          example: "p.petrovic@levi9.com"
+    DeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Feedback message for delete action
+          example: "Deleted"
+        value:
+          type: boolean
+          description: Confirmation for delete action
+          example: "true"
+    OrderDTO:
+      type: object
+      properties:
+        price:
+          type: double
+          description: Order price
+          example: 799.99
+        itemIds:
+          type: array
+          items:
+            type: string
+        userId:
+          type: string
+    ItemDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the item
+          example: "Laptop"
+        description:
+          type: string
+          description: Description of the item
+          example: "Asus Rog Strix xyz"
+        price:
+          type: double
+          description: Price of the item
+          example: 799.99
