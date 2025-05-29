@@ -1,5 +1,6 @@
 package com.levi9.internship.controller;
 
+import com.levi9.internship.api.UsersApi;
 import com.levi9.internship.model.DeleteResponse;
 import com.levi9.internship.model.OrderDTO;
 import com.levi9.internship.model.UserDTO;
